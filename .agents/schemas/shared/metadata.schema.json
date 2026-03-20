@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/shared/metadata",
+  "title": "Event Metadata",
+  "description": "Metadata envelope fields present on every domain event in the Pulse platform. These fields form the base event envelope described in EVENT_ARCHITECTURE.md §3. Every event published to NATS must include these fields at the top level.",
+  "version": "1.0.0",
+  "owner": "platform",
+  "domain": "platform",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "event": {
+      "type": "string",
+      "description": "Event name used as the NATS subject (e.g., 'track.uploaded', 'authority.user.signed_up')."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Schema version of this event. Increment when the payload structure changes in a breaking way."
+    },
+    "producer": {
+      "type": "string",
+      "description": "Identifier of the microservice that emitted this event (e.g., 'soundgarden', 'petrified', 'fort-minor')."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the event was emitted."
+    },
+    "correlationId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Pipeline or workflow tracing ID. All events in the same pipeline run share this value."
+    },
+    "data": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Event-specific payload. Structure varies by event type."
+    }
+  },
+  "required": [
+    "event",
+    "version",
+    "producer",
+    "timestamp",
+    "correlationId",
+    "data"
+  ],
+  "examples": [
+    {
+      "event": "track.fort-minor.completed",
+      "version": 1,
+      "producer": "fort-minor",
+      "timestamp": "2026-03-19T14:32:00.000Z",
+      "correlationId": "550e8400-e29b-41d4-a716-446655440000",
+      "data": {
+        "trackId": "track-uuid-456",
+        "completedAt": "2026-03-19T14:32:00.000Z"
+      }
+    }
+  ]
+}

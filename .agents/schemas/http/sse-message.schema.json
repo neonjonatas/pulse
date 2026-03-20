@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/http/sse-message",
+  "title": "SSE Pipeline Event Message",
+  "description": "Schema for the PipelineEventPayload sent as SSE data via GET /pipelines/:trackId/events on the Backstage service. Each event carries a unique id for Last-Event-ID replay support.",
+  "version": "1.0.0",
+  "owner": "realtime",
+  "domain": "realtime",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique event identifier. Used as the SSE 'id' field for Last-Event-ID replay. Must be stable across reconnections."
+    },
+    "type": {
+      "type": "string",
+      "const": "pipeline.event",
+      "description": "SSE event type. Always 'pipeline.event' for pipeline events."
+    },
+    "event": {
+      "type": "string",
+      "description": "NATS subject name of the original domain event (e.g., 'track.uploaded', 'track.petrified.generated')."
+    },
+    "trackId": {
+      "type": "string",
+      "description": "Track identifier this pipeline event belongs to. Used for per-track stream scoping."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the event was recorded by Backstage."
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Original event payload from the domain event. Structure varies by event type."
+    }
+  },
+  "required": ["id", "type", "event", "trackId", "timestamp", "payload"],
+  "examples": [
+    {
+      "id": "evt-abc123-001",
+      "type": "pipeline.event",
+      "event": "track.uploaded",
+      "trackId": "track-uuid-456",
+      "timestamp": "2026-03-19T14:30:00.000Z",
+      "payload": {
+        "trackId": "track-uuid-456",
+        "storedAt": "2026-03-19T14:30:00.000Z",
+        "storage": {
+          "bucket": "soundgarden-tracks",
+          "key": "track-uuid-456/original.mp3"
+        }
+      }
+    },
+    {
+      "id": "evt-abc123-002",
+      "type": "pipeline.event",
+      "event": "track.petrified.generated",
+      "trackId": "track-uuid-456",
+      "timestamp": "2026-03-19T14:30:15.000Z",
+      "payload": {
+        "trackId": "track-uuid-456",
+        "generatedAt": "2026-03-19T14:30:15.000Z"
+      }
+    }
+  ]
+}

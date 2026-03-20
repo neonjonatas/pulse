@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/http/health-check-response",
+  "title": "Health Check HTTP Response",
+  "description": "HTTP response contract for GET /health across all NestJS services. Implemented by HealthController in each microservice. Docker healthchecks probe this endpoint with wget.",
+  "version": "1.0.0",
+  "owner": "platform",
+  "domain": "platform",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "const": "ok",
+      "description": "Health status. Always 'ok' when the service is running."
+    }
+  },
+  "required": ["status"],
+  "additionalProperties": false,
+  "examples": [{ "status": "ok" }]
+}

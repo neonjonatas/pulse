@@ -1,0 +1,8 @@
+packages:
+  - "repos/apps/*"
+  - "repos/packages/*"
+  - "repos/domain/**"
+  - "repos/agents/*"
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

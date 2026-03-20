@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/events/identity-lifecycle",
+  "title": "Identity Lifecycle Events",
+  "description": "Schema documenting all NATS event subjects for the identity domain. Covers authentication events from Authority (signup, login, token refresh, logout) and user profile events from Slim Shady (profile CRUD). Derived from AuthorityEvent and UserEvent enums in @pack/event-inventory.",
+  "version": "1.0.0",
+  "owner": "identity",
+  "domain": "identity",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "subjects": {
+      "type": "object",
+      "description": "All NATS subjects in the identity lifecycle.",
+      "properties": {
+        "authentication": {
+          "type": "object",
+          "description": "Authentication lifecycle events produced by Authority.",
+          "properties": {
+            "authority.user.signed_up": {
+              "type": "object",
+              "description": "New user completed signup. Consumed by Slim Shady to create a user profile.",
+              "properties": {
+                "producer": { "const": "authority" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "const": "slim-shady" }
+                },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "userId": { "type": "string" },
+                    "email": { "type": "string", "format": "email" },
+                    "signedUpAt": { "type": "string", "format": "date-time" }
+                  },
+                  "required": ["userId", "signedUpAt"]
+                }
+              }
+            },
+            "authority.user.logged_in": {
+              "type": "object",
+              "description": "Existing user logged in. Observability only.",
+              "properties": {
+                "producer": { "const": "authority" },
+                "consumers": {
+                  "type": "array",
+                  "description": "No active consumers; observability only."
+                }
+              }
+            },
+            "authority.token.refreshed": {
+              "type": "object",
+              "description": "JWT access token refreshed. Observability only.",
+              "properties": {
+                "producer": { "const": "authority" },
+                "consumers": {
+                  "type": "array",
+                  "description": "No active consumers; observability only."
+                }
+              }
+            },
+            "authority.user.logged_out": {
+              "type": "object",
+              "description": "User logged out and session destroyed. Observability only.",
+              "properties": {
+                "producer": { "const": "authority" },
+                "consumers": {
+                  "type": "array",
+                  "description": "No active consumers; observability only."
+                }
+              }
+            }
+          }
+        },
+        "profile": {
+          "type": "object",
+          "description": "User profile lifecycle events produced by Slim Shady.",
+          "properties": {
+            "user.profile.created": {
+              "type": "object",
+              "description": "User profile created. Consumed by Authority for profileId backfill.",
+              "properties": {
+                "producer": { "const": "slim-shady" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "const": "authority" }
+                },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "profileId": { "type": "string" },
+                    "authId": { "type": "string" },
+                    "createdAt": { "type": "string", "format": "date-time" }
+                  },
+                  "required": ["profileId", "authId", "createdAt"]
+                }
+              }
+            },
+            "user.profile.updated": {
+              "type": "object",
+              "description": "User profile updated.",
+              "properties": {
+                "producer": { "const": "slim-shady" }
+              }
+            },
+            "user.profile.deleted": {
+              "type": "object",
+              "description": "User profile deleted. Modeled but not currently produced.",
+              "properties": {
+                "producer": { "const": "slim-shady" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["subjects"]
+}

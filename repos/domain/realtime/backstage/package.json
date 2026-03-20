@@ -1,0 +1,37 @@
+{
+  "name": "@micro/backstage",
+  "version": "0.1.0",
+  "packageManager": "pnpm@8.8.0",
+  "private": true,
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules -r tsconfig-paths/register src/main.ts",
+    "build": "nest build && tsc-alias -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@pack/event-inventory": "workspace:*",
+    "@pack/env-orchestration": "workspace:*",
+    "@pack/nats-broker-messaging": "workspace:*",
+    "@pack/kernel": "workspace:*",
+    "@pack/patterns": "workspace:*",
+    "@nestjs/common": "^11.1.13",
+    "@nestjs/core": "^11.1.13",
+    "@nestjs/mongoose": "^11.0.4",
+    "@nestjs/platform-express": "^11.1.13",
+    "@nestjs/platform-socket.io": "^11.1.13",
+    "@nestjs/websockets": "^11.1.13",
+    "mongoose": "^9.2.1",
+    "nats": "^2.17.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
+    "socket.io": "^4.8.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.16",
+    "@types/node": "^20",
+    "ts-node-dev": "^2.0.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5"
+  }
+}

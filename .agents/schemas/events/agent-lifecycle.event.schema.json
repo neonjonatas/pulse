@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/events/agent-lifecycle",
+  "title": "Agent Lifecycle Events",
+  "description": "Schema documenting all NATS event subjects for the Mastra agent domain. Covers Chester (search orchestration) and Emily (transformation + domain adapter) agent events. Derived from ChesterEvent and EmilyEvent enums in @pack/event-inventory.",
+  "version": "1.0.0",
+  "owner": "agent",
+  "domain": "agent",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "subjects": {
+      "type": "object",
+      "description": "All NATS subjects for agent lifecycle events.",
+      "properties": {
+        "chester": {
+          "type": "object",
+          "description": "Chester search orchestrator events. Chester uses Spotify Web API for track search with circuit breaker protection.",
+          "properties": {
+            "chester.search.started": {
+              "type": "object",
+              "description": "Spotify search initiated by Chester.",
+              "properties": {
+                "producer": { "const": "chester" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "query": { "type": "string" },
+                    "startedAt": { "type": "string", "format": "date-time" }
+                  },
+                  "required": ["query", "startedAt"]
+                }
+              }
+            },
+            "chester.search.ended": {
+              "type": "object",
+              "description": "Spotify search completed with results.",
+              "properties": {
+                "producer": { "const": "chester" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "query": { "type": "string" },
+                    "resultCount": { "type": "integer" },
+                    "endedAt": { "type": "string", "format": "date-time" }
+                  },
+                  "required": ["query", "resultCount", "endedAt"]
+                }
+              }
+            },
+            "chester.search.failed": {
+              "type": "object",
+              "description": "Spotify search failed (API error, circuit breaker open, timeout).",
+              "properties": {
+                "producer": { "const": "chester" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "query": { "type": "string" },
+                    "errorCode": { "type": "string" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["query", "errorCode"]
+                }
+              }
+            },
+            "chester.search.not_found": {
+              "type": "object",
+              "description": "Spotify search returned zero results.",
+              "properties": {
+                "producer": { "const": "chester" }
+              }
+            },
+            "chester.emily.streamed": {
+              "type": "object",
+              "description": "Chester streamed search results to Emily for transformation.",
+              "properties": {
+                "producer": { "const": "chester" }
+              }
+            }
+          }
+        },
+        "emily": {
+          "type": "object",
+          "description": "Emily transformation agent events. Emily transforms Spotify API responses into Pulse domain types.",
+          "properties": {
+            "emily.search.received": {
+              "type": "object",
+              "description": "Emily received search results from Chester.",
+              "properties": {
+                "producer": { "const": "emily" }
+              }
+            },
+            "emily.search.transformed": {
+              "type": "object",
+              "description": "Emily transformed Spotify data into Pulse domain format.",
+              "properties": {
+                "producer": { "const": "emily" }
+              }
+            },
+            "emily.transform.failed": {
+              "type": "object",
+              "description": "Emily transformation failed.",
+              "properties": {
+                "producer": { "const": "emily" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "errorCode": { "type": "string" },
+                    "message": { "type": "string" }
+                  },
+                  "required": ["errorCode"]
+                }
+              }
+            },
+            "emily.search.returned": {
+              "type": "object",
+              "description": "Emily returned transformed results to the caller.",
+              "properties": {
+                "producer": { "const": "emily" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["subjects"]
+}

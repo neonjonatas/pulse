@@ -1,0 +1,36 @@
+{
+  "name": "@agent/emily",
+  "version": "1.0.0",
+  "description": "Transformation agent — receives Spotify results, maps to Pulse domain, and forwards via MCP",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "mastra dev",
+    "build": "mastra build && tsc -p tsconfig.build.json",
+    "start": "mastra start",
+    "typecheck": "tsc --noEmit"
+  },
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "dependencies": {
+    "@mastra/core": "^1.13.2",
+    "@mastra/mcp": "^0.3.5",
+    "@pack/env-orchestration": "workspace:*",
+    "@pack/event-inventory": "workspace:*",
+    "@pack/nats-broker-messaging": "workspace:*",
+    "@pack/patterns": "workspace:*",
+    "nats": "^2.17.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "mastra": "^1.3.12",
+    "typescript": "^5.9.3"
+  }
+}

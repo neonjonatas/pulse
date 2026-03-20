@@ -1,0 +1,19 @@
+{
+  "extends": "//",
+  "root": false,
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "noEmptyBlock": "off"
+      },
+      "a11y": {
+        "noAriaHiddenOnFocusable": "error",
+        "useSemanticElements": "warn",
+        "noRedundantAlt": "warn"
+      }
+    }
+  },
+  "javascript": {
+    "jsxRuntime": "transparent"
+  }
+}

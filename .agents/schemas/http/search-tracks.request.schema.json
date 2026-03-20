@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/http/search-tracks-request",
+  "title": "Search Tracks Request",
+  "description": "Query parameters for Spotify track search initiated through the Chester agent. Chester uses Spotify Web API Client Credentials flow to search for tracks, albums, and artists.",
+  "version": "1.0.0",
+  "owner": "agent",
+  "domain": "agent",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "Search query string. Passed to Spotify's /v1/search endpoint."
+    },
+    "type": {
+      "type": "string",
+      "enum": ["track", "album", "artist"],
+      "default": "track",
+      "description": "Spotify search entity type."
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 20,
+      "description": "Maximum number of results to return."
+    },
+    "offset": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Pagination offset for search results."
+    },
+    "market": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$",
+      "description": "ISO 3166-1 alpha-2 country code for market filtering."
+    }
+  },
+  "required": ["query"],
+  "examples": [
+    {
+      "query": "Linkin Park",
+      "type": "track",
+      "limit": 10,
+      "offset": 0
+    },
+    {
+      "query": "Hybrid Theory",
+      "type": "album",
+      "market": "US"
+    }
+  ]
+}

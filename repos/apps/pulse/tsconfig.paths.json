@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@state": ["./app/lib/state/global.data.ts"],
+      "@domain": ["./app/lib/state/domain/index.ts"],
+      "@atoms": ["./app/lib/state/atoms/index.ts"],
+      "@mocks": ["./app/lib/state/mocks/index.ts"],
+      "@hls": ["./app/lib/hls/index.ts"],
+      "@api/*": ["./app/api/*"],
+      "@lib/*": ["./app/lib/*"],
+      "@infra/*": ["./app/infra/*"],
+      "@login/*": ["./app/(public)/(auth)/login/lib/*"],
+      "@signup/*": ["./app/(public)/(auth)/signup/lib/*"],
+      "@gallery/*": ["./app/(protected)/(player)/@gallery/lib/*"],
+      "@player/*": ["./app/(protected)/(player)/lib/*"],
+      "@now-playing/*": ["./app/(protected)/(player)/@now-playing/lib/*"],
+      "@uploader/*": ["./app/(protected)/(player)/@uploader/lib/*"],
+      "@user-menu/*": ["./app/(protected)/(player)/@user-menu/lib/*"],
+      "@volume-bar/*": [
+        "./app/(protected)/(player)/@now-playing/@volume-bar/lib/*"
+      ],
+      "@track-metadata/*": [
+        "./app/(protected)/(player)/@now-playing/@track-metadata/lib/*"
+      ],
+      "@playback/*": [
+        "./app/(protected)/(player)/@now-playing/@playback/lib/*"
+      ],
+      "@shadcn/components": ["./app/infra/shadcn/components"],
+      "@shadcn/components/*": ["./app/infra/shadcn/components/*"],
+      "@shadcn/lib/utils": ["./app/infra/shadcn/lib/utils"],
+      "@shadcn/components/ui": ["./app/infra/shadcn/components/ui"],
+      "@shadcn/components/ui/*": ["./app/infra/shadcn/components/ui/*"],
+      "@shadcn/lib": ["./app/infra/shadcn/lib"],
+      "@shadcn/lib/*": ["./app/infra/shadcn/lib/*"],
+      "@shadcn/hooks": ["./app/infra/shadcn/hooks"],
+      "@shadcn/hooks/*": ["./app/infra/shadcn/hooks/*"]
+    }
+  }
+}

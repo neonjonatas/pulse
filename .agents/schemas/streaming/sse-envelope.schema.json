@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/streaming/sse-envelope",
+  "title": "SSE Wire Format Envelope",
+  "description": "Server-Sent Events wire format as sent over HTTP by the Backstage SSE controller (GET /pipelines/:trackId/events). Defines the SSE frame structure including the id field for Last-Event-ID replay, event type, JSON-serialized data, and retry directive.",
+  "version": "1.0.0",
+  "owner": "realtime",
+  "domain": "realtime",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "SSE event ID. Set as the 'id' field in the SSE frame. The browser stores this and sends it back as Last-Event-ID on reconnection, enabling replay of missed events."
+    },
+    "event": {
+      "type": "string",
+      "default": "pipeline.event",
+      "description": "SSE event type. Maps to the 'event' field in the SSE frame. The frontend EventSource listener filters on this value."
+    },
+    "data": {
+      "type": "string",
+      "description": "JSON-serialized PipelineEventPayload (see sse-message.schema.json). The SSE spec transmits data as a string; the client must JSON.parse it."
+    },
+    "retry": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Reconnection time in milliseconds. Sent once at the start of the stream to configure the browser's automatic reconnection interval."
+    }
+  },
+  "required": ["id", "data"],
+  "examples": [
+    {
+      "id": "evt-abc123-001",
+      "event": "pipeline.event",
+      "data": "{\"id\":\"evt-abc123-001\",\"type\":\"pipeline.event\",\"event\":\"track.uploaded\",\"trackId\":\"track-uuid-456\",\"timestamp\":\"2026-03-19T14:30:00.000Z\",\"payload\":{}}",
+      "retry": 3000
+    }
+  ]
+}

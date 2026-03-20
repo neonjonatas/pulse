@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": ".",
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@chester": ["./src/chester/chester.agent.ts"],
+      "@spotify/*": ["./src/chester/spotify/*"],
+      "@tools": ["./src/chester/tools/index.ts"],
+      "@resilience": ["./src/chester/resilience/index.ts"],
+      "@events": ["./src/chester/events/index.ts"],
+      "@mcp": ["./src/chester/mcp/index.ts"],
+      "@chester-types/*": ["./src/chester/types/*"],
+      "@mastra/*": ["./src/mastra/*"]
+    }
+  }
+}

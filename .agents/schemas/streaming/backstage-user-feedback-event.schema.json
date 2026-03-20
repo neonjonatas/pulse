@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/streaming/backstage-user-feedback-event",
+  "title": "Backstage User Feedback Event",
+  "description": "Optional UI metadata that can be attached to domain events for real-time dashboard and pipeline visualization feedback. Defined in EVENT_ARCHITECTURE.md §12. When present, the frontend uses these fields to display progress indicators and human-readable status messages.",
+  "version": "1.0.0",
+  "owner": "realtime",
+  "domain": "realtime",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "ui": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Human-readable status message for the frontend (e.g., 'Transcription in progress...', 'Track approved')."
+        },
+        "progress": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Percentage progress of the current operation (0-100). Optional; omit when progress is indeterminate."
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["info", "success", "warning", "error"],
+          "default": "info",
+          "description": "Visual severity level for the frontend notification."
+        }
+      },
+      "required": ["message"],
+      "description": "UI feedback metadata. Attached as a top-level 'ui' field on the event envelope alongside the standard envelope fields."
+    }
+  },
+  "required": ["ui"],
+  "examples": [
+    {
+      "ui": {
+        "message": "Transcription in progress...",
+        "progress": 50,
+        "severity": "info"
+      }
+    },
+    {
+      "ui": {
+        "message": "Track approved and ready for transcoding",
+        "severity": "success"
+      }
+    },
+    {
+      "ui": {
+        "message": "Fingerprint generation failed",
+        "severity": "error"
+      }
+    }
+  ]
+}

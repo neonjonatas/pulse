@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/events/track-lifecycle",
+  "title": "Track Lifecycle Events",
+  "description": "Schema documenting all NATS event subjects in the track processing pipeline. Covers the full lifecycle from upload through fingerprinting (Petrified), transcription (Fort Minor), AI reasoning (Stereo), transcoding (Mockingbird), and HLS persistence (Hybrid Storage). Derived from the TrackEvent enum in @pack/event-inventory.",
+  "version": "1.0.0",
+  "owner": "streaming",
+  "domain": "streaming",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "subjects": {
+      "type": "object",
+      "description": "All NATS subjects in the track lifecycle, grouped by processing stage.",
+      "properties": {
+        "upload": {
+          "type": "object",
+          "description": "Upload stage events produced by Soundgarden.",
+          "properties": {
+            "track.upload.received": {
+              "type": "object",
+              "description": "Upload received by Soundgarden.",
+              "properties": {
+                "producer": { "const": "soundgarden" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "const": "backstage" }
+                },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "trackId": { "type": "string" },
+                    "receivedAt": { "type": "string", "format": "date-time" }
+                  },
+                  "required": ["trackId", "receivedAt"]
+                }
+              }
+            },
+            "track.upload.validated": {
+              "type": "object",
+              "description": "Upload validated by Soundgarden.",
+              "properties": {
+                "producer": { "const": "soundgarden" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "const": "backstage" }
+                }
+              }
+            },
+            "track.upload.stored": {
+              "type": "object",
+              "description": "Upload stored to object storage by Soundgarden.",
+              "properties": {
+                "producer": { "const": "soundgarden" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "const": "backstage" }
+                },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "trackId": { "type": "string" },
+                    "storedAt": { "type": "string", "format": "date-time" },
+                    "storage": {
+                      "type": "object",
+                      "properties": {
+                        "bucket": { "type": "string" },
+                        "key": { "type": "string" }
+                      },
+                      "required": ["bucket", "key"]
+                    }
+                  },
+                  "required": ["trackId", "storedAt", "storage"]
+                }
+              }
+            },
+            "track.uploaded": {
+              "type": "object",
+              "description": "Upload fully completed. Triggers Petrified fingerprinting.",
+              "properties": {
+                "producer": { "const": "soundgarden" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "enum": ["petrified", "backstage"] }
+                }
+              }
+            },
+            "track.upload.failed": {
+              "type": "object",
+              "description": "Upload failed.",
+              "properties": {
+                "producer": { "const": "soundgarden" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "const": "backstage" }
+                }
+              }
+            }
+          }
+        },
+        "fingerprint": {
+          "type": "object",
+          "description": "Fingerprinting stage events produced by Petrified.",
+          "properties": {
+            "track.petrified.generated": {
+              "type": "object",
+              "description": "Fingerprint generated. Consumed by Fort Minor, Stereo, and Backstage.",
+              "properties": {
+                "producer": { "const": "petrified" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "enum": ["fort-minor", "stereo", "backstage"] }
+                }
+              }
+            },
+            "track.petrified.song.found": {
+              "type": "object",
+              "description": "Song identified in fingerprint database.",
+              "properties": { "producer": { "const": "petrified" } }
+            },
+            "track.petrified.song.unknown": {
+              "type": "object",
+              "description": "Song not found in fingerprint database.",
+              "properties": { "producer": { "const": "petrified" } }
+            },
+            "track.petrified.detected": {
+              "type": "object",
+              "description": "Fingerprint detected/matched.",
+              "properties": { "producer": { "const": "petrified" } }
+            },
+            "track.petrified.failed": {
+              "type": "object",
+              "description": "Fingerprinting failed.",
+              "properties": { "producer": { "const": "petrified" } }
+            },
+            "track.duplicate.detected": {
+              "type": "object",
+              "description": "Duplicate track detected by Petrified.",
+              "properties": { "producer": { "const": "petrified" } }
+            }
+          }
+        },
+        "transcription": {
+          "type": "object",
+          "description": "Transcription stage events produced by Fort Minor.",
+          "properties": {
+            "track.fort-minor.started": {
+              "type": "object",
+              "description": "Transcription started.",
+              "properties": { "producer": { "const": "fort-minor" } }
+            },
+            "track.fort-minor.completed": {
+              "type": "object",
+              "description": "Transcription completed. Consumed by Stereo and Backstage.",
+              "properties": {
+                "producer": { "const": "fort-minor" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "enum": ["stereo", "backstage"] }
+                }
+              }
+            },
+            "track.fort-minor.failed": {
+              "type": "object",
+              "description": "Transcription failed.",
+              "properties": { "producer": { "const": "fort-minor" } }
+            }
+          }
+        },
+        "reasoning": {
+          "type": "object",
+          "description": "AI reasoning stage events produced by Stereo.",
+          "properties": {
+            "track.stereo.started": {
+              "type": "object",
+              "description": "AI reasoning started.",
+              "properties": { "producer": { "const": "stereo" } }
+            },
+            "track.approved": {
+              "type": "object",
+              "description": "Track approved by Stereo. Consumed by Mockingbird and Backstage.",
+              "properties": {
+                "producer": { "const": "stereo" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "enum": ["mockingbird", "backstage"] }
+                }
+              }
+            },
+            "track.rejected": {
+              "type": "object",
+              "description": "Track rejected by Stereo.",
+              "properties": {
+                "producer": { "const": "stereo" },
+                "payload": {
+                  "type": "object",
+                  "properties": {
+                    "reason": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "track.stereo.failed": {
+              "type": "object",
+              "description": "AI reasoning failed.",
+              "properties": { "producer": { "const": "stereo" } }
+            }
+          }
+        },
+        "transcoding": {
+          "type": "object",
+          "description": "Transcoding stage events produced by Mockingbird.",
+          "properties": {
+            "track.transcoding.started": {
+              "type": "object",
+              "description": "Transcoding started.",
+              "properties": { "producer": { "const": "mockingbird" } }
+            },
+            "track.transcoding.completed": {
+              "type": "object",
+              "description": "Transcoding completed.",
+              "properties": { "producer": { "const": "mockingbird" } }
+            },
+            "track.transcoding.failed": {
+              "type": "object",
+              "description": "Transcoding failed.",
+              "properties": { "producer": { "const": "mockingbird" } }
+            }
+          }
+        },
+        "hls": {
+          "type": "object",
+          "description": "HLS packaging and storage events.",
+          "properties": {
+            "track.hls.generated": {
+              "type": "object",
+              "description": "HLS package generated by Mockingbird. Consumed by Hybrid Storage and Backstage.",
+              "properties": {
+                "producer": { "const": "mockingbird" },
+                "consumers": {
+                  "type": "array",
+                  "items": { "enum": ["hybrid-storage", "backstage"] }
+                }
+              }
+            },
+            "track.hls.stored": {
+              "type": "object",
+              "description": "HLS package persisted by Hybrid Storage.",
+              "properties": { "producer": { "const": "hybrid-storage" } }
+            },
+            "track.hls.failed": {
+              "type": "object",
+              "description": "HLS generation or persistence failed.",
+              "properties": { "producer": { "const": "hybrid-storage" } }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["subjects"]
+}

@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "declaration": true,
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@primitives": ["./primitives/index.ts"],
+      "@types": ["./types/index.ts"],
+      "@events": ["./events/index.ts"],
+      "@application": ["./application/index.ts"]
+    }
+  },
+  "include": ["src/**/*"]
+}

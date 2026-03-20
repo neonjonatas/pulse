@@ -1,0 +1,71 @@
+/* =========================================================
+🌌 PULSE NEON
+Inspired by SynthWave, Vapor Glow, and Pearlescent Light
+========================================================= */
+
+:root {
+  --gradient-neon: linear-gradient(
+    to bottom right,
+    var(--ps-neon-01) 0%,
+    var(--ps-neon-03) 14%,
+    var(--ps-neon-05) 26%,
+    var(--ps-neon-07) 38%,
+    var(--ps-neon-09) 48%,
+    var(--ps-neon-11) 58%,
+    var(--ps-neon-13) 66%,
+    var(--ps-neon-16) 76%,
+    var(--ps-neon-18) 86%,
+    var(--ps-neon-22) 94%,
+    var(--ps-neon-24) 100%
+  );
+
+  --gradient-neon-warm: linear-gradient(
+    to top left,
+    var(--ps-neon-15) 0%,
+    var(--ps-neon-16) 14%,
+    var(--ps-neon-17) 28%,
+    var(--ps-neon-18) 42%,
+    var(--ps-neon-19) 67%,
+    var(--ps-neon-20) 90%,
+    var(--ps-neon-21) 100%
+  );
+
+  --gradient-neon-cool: linear-gradient(
+    to bottom right,
+    var(--ps-neon-22) 0%,
+    var(--ps-neon-23) 5%,
+    var(--ps-neon-24) 10%,
+    var(--ps-neon-25) 30%,
+    var(--ps-neon-26) 67%,
+    var(--ps-neon-27) 90%,
+    var(--ps-neon-28) 100%
+  );
+}
+
+@layer utilities {
+  .text-neon {
+    background: var(--gradient-neon);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-neon-warm {
+    background-image: var(--gradient-neon-warm);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .bg-neon {
+    background: var(--gradient-neon)
+  }
+
+  .bg-neon-warm {
+    background-image: var(--gradient-neon-warm);
+  }
+
+  .bg-neon-cool {
+    background-image: var(--gradient-neon-cool);
+  }
+}

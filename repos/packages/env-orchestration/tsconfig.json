@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "declaration": true,
+    "module": "ES2022",
+    "target": "ES2022",
+    "strict": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}

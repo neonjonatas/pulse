@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/health/readiness",
+  "title": "Readiness Check Response",
+  "description": "Extended health check response that includes dependency readiness status. Used when services need to report whether their downstream dependencies (database, NATS, object storage) are connected and operational.",
+  "version": "1.0.0",
+  "owner": "platform",
+  "domain": "platform",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["ok", "degraded", "unhealthy"],
+      "description": "'ok' when all dependencies are connected. 'degraded' when some are unavailable. 'unhealthy' when critical dependencies are down."
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "https://pulse.internal/schemas/health/dependency-status"
+      },
+      "description": "Map of dependency name to its status. Keys are dependency identifiers (e.g., 'nats', 'mongodb', 'minio')."
+    },
+    "uptime": {
+      "type": "number",
+      "description": "Process uptime in seconds."
+    }
+  },
+  "required": ["status"],
+  "examples": [
+    {
+      "status": "ok",
+      "dependencies": {
+        "nats": { "status": "connected", "latencyMs": 2 },
+        "mongodb": { "status": "connected", "latencyMs": 5 },
+        "minio": { "status": "connected", "latencyMs": 8 }
+      },
+      "uptime": 3600
+    },
+    {
+      "status": "degraded",
+      "dependencies": {
+        "nats": { "status": "connected", "latencyMs": 2 },
+        "mongodb": { "status": "disconnected" }
+      },
+      "uptime": 120
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export { emilyAgent } from '@emily'

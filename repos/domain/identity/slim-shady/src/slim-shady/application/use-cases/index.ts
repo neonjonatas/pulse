@@ -1,0 +1,7 @@
+export { CreateUserProfileUseCase } from './create-user-profile.usecase'
+export { UpdateUserProfileUseCase } from './update-user-profile.usecase'
+export { GetUserProfileUseCase } from './get-user-profile.usecase'
+export { GetUserProfileByAuthIdUseCase } from './get-user-profile-by-auth-id.usecase'
+export { UpdateUserPreferencesUseCase } from './update-user-preferences.usecase'
+export { CompleteOnboardingUseCase } from './complete-onboarding.usecase'
+export type { UserProfileResult } from './get-user-profile.usecase'

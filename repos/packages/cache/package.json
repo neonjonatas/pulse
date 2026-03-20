@@ -1,0 +1,28 @@
+{
+  "name": "@pack/cache",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@pack/event-inventory": "workspace:*"
+  },
+  "devDependencies": {
+    "tsc-alias": "^1.8.16",
+    "typescript": "^5"
+  }
+}

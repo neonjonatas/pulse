@@ -1,0 +1,556 @@
+services:
+  # ── Shared Infrastructure ────────────────────────────────────────────────
+
+  nats:
+    image: nats:2.10-alpine
+    container_name: nats
+    ports:
+      - '4222:4222'
+      - '8222:8222'
+    command: ['--jetstream', '--http_port', '8222']
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:8222/healthz']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ── Authority Infrastructure ─────────────────────────────────────────────
+
+  authority-mongo:
+    image: mongo:7
+    container_name: authority-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - authority-mongo_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.adminCommand("ping").ok']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Slim Shady Infrastructure ────────────────────────────────────────────
+
+  slim-shady-mongo:
+    image: mongo:7
+    container_name: slim-shady-mongo
+    ports:
+      - '27018:27017'
+    volumes:
+      - slim-shady-mongo_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.adminCommand("ping").ok']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Backstage Infrastructure ─────────────────────────────────────────────
+
+  backstage-mongo:
+    image: mongo:7
+    container_name: backstage-mongo
+    ports:
+      - '27020:27017'
+    volumes:
+      - backstage-mongo_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.adminCommand("ping").ok']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Stereo Infrastructure ────────────────────────────────────────────────
+
+  stereo-mongo:
+    image: mongo:7
+    container_name: stereo-mongo
+    ports:
+      - '27019:27017'
+    volumes:
+      - stereo-mongo_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.adminCommand("ping").ok']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # ── Petrified Infrastructure ─────────────────────────────────────────────
+
+  petrified-redis:
+    image: redis:7-alpine
+    container_name: petrified-redis
+    ports:
+      - '6380:6379'
+    volumes:
+      - petrified-redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  petrified-minio:
+    image: minio/minio:latest
+    container_name: petrified-minio
+    ports:
+      - '9040:9000'
+      - '9041:9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - petrified-minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  petrified-minio-init:
+    image: minio/mc:latest
+    container_name: petrified-minio-init
+    depends_on:
+      petrified-minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    entrypoint: >
+      /bin/sh -c "
+        mc alias set local http://petrified-minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
+        mc mb --ignore-existing local/fingerprints;
+        echo 'Petrified MinIO buckets ready';
+      "
+
+  # ── Fort Minor Infrastructure ────────────────────────────────────────────
+
+  fort-minor-redis:
+    image: redis:7-alpine
+    container_name: fort-minor-redis
+    ports:
+      - '6381:6379'
+    volumes:
+      - fort-minor-redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  fort-minor-minio:
+    image: minio/minio:latest
+    container_name: fort-minor-minio
+    ports:
+      - '9050:9000'
+      - '9051:9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - fort-minor-minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  fort-minor-minio-init:
+    image: minio/mc:latest
+    container_name: fort-minor-minio-init
+    depends_on:
+      fort-minor-minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    entrypoint: >
+      /bin/sh -c "
+        mc alias set local http://fort-minor-minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
+        mc mb --ignore-existing local/transcripts;
+        echo 'Fort Minor MinIO buckets ready';
+      "
+
+  # ── Soundgarden Infrastructure ───────────────────────────────────────────
+
+  soundgarden-minio:
+    image: minio/minio:latest
+    container_name: soundgarden-minio
+    ports:
+      - '9010:9000'
+      - '9011:9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - soundgarden-minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  soundgarden-minio-init:
+    image: minio/mc:latest
+    container_name: soundgarden-minio-init
+    depends_on:
+      soundgarden-minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    entrypoint: >
+      /bin/sh -c "
+        mc alias set local http://soundgarden-minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
+        mc mb --ignore-existing local/uploads;
+        echo 'Soundgarden MinIO buckets ready';
+      "
+
+  # ── Mockingbird Infrastructure ───────────────────────────────────────────
+
+  mockingbird-minio:
+    image: minio/minio:latest
+    container_name: mockingbird-minio
+    ports:
+      - '9020:9000'
+      - '9021:9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - mockingbird-minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mockingbird-minio-init:
+    image: minio/mc:latest
+    container_name: mockingbird-minio-init
+    depends_on:
+      mockingbird-minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    entrypoint: >
+      /bin/sh -c "
+        mc alias set local http://mockingbird-minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
+        mc mb --ignore-existing local/transcoded;
+        echo 'Mockingbird MinIO buckets ready';
+      "
+
+  # ── Hybrid Storage Infrastructure ────────────────────────────────────────
+
+  hybrid-storage-minio:
+    image: minio/minio:latest
+    container_name: hybrid-storage-minio
+    ports:
+      - '9030:9000'
+      - '9031:9001'
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - hybrid-storage-minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  hybrid-storage-minio-init:
+    image: minio/mc:latest
+    container_name: hybrid-storage-minio-init
+    depends_on:
+      hybrid-storage-minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    entrypoint: >
+      /bin/sh -c "
+        mc alias set local http://hybrid-storage-minio:9000 $$MINIO_ROOT_USER $$MINIO_ROOT_PASSWORD;
+        mc mb --ignore-existing local/transcoded;
+        echo 'Hybrid Storage MinIO buckets ready';
+      "
+
+  # ── Application Services ─────────────────────────────────────────────────
+
+  authority:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/identity/authority/Dockerfile
+    container_name: authority
+    ports:
+      - '7000:7000'
+    depends_on:
+      authority-mongo:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/identity/authority/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7000/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  slim-shady:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/identity/slim-shady/Dockerfile
+    container_name: slim-shady
+    ports:
+      - '7400:7400'
+    depends_on:
+      slim-shady-mongo:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/identity/slim-shady/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7400/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  soundgarden:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/streaming/soundgarden/Dockerfile
+    container_name: soundgarden
+    ports:
+      - '7100:7100'
+    depends_on:
+      nats:
+        condition: service_healthy
+      soundgarden-minio:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/streaming/soundgarden/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7100/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  backstage:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/realtime/backstage/Dockerfile
+    container_name: backstage
+    ports:
+      - '4001:4001'
+    depends_on:
+      backstage-mongo:
+        condition: service_healthy
+      nats:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/realtime/backstage/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:4001/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  petrified:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/ai/petrified/Dockerfile
+    container_name: petrified
+    ports:
+      - '7201:7201'
+    depends_on:
+      nats:
+        condition: service_healthy
+      petrified-redis:
+        condition: service_healthy
+      petrified-minio:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/ai/petrified/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7201/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  fort-minor:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/ai/fort-minor/Dockerfile
+    container_name: fort-minor
+    ports:
+      - '7202:7202'
+    depends_on:
+      nats:
+        condition: service_healthy
+      fort-minor-redis:
+        condition: service_healthy
+      fort-minor-minio:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/ai/fort-minor/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7202/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  stereo:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/ai/stereo/Dockerfile
+    container_name: stereo
+    ports:
+      - '7203:7203'
+    depends_on:
+      nats:
+        condition: service_healthy
+      stereo-mongo:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/ai/stereo/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7203/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mockingbird:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/streaming/mockingbird/Dockerfile
+    container_name: mockingbird
+    ports:
+      - '7200:7200'
+    depends_on:
+      nats:
+        condition: service_healthy
+      mockingbird-minio:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/streaming/mockingbird/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7200/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  hybrid-storage:
+    build:
+      context: ../../..
+      dockerfile: repos/domain/streaming/hybrid-storage/Dockerfile
+    container_name: hybrid-storage
+    ports:
+      - '7300:7300'
+    depends_on:
+      nats:
+        condition: service_healthy
+      hybrid-storage-minio:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/domain/streaming/hybrid-storage/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:7300/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  pulse:
+    build:
+      context: ../../..
+      dockerfile: repos/apps/pulse/Dockerfile
+    container_name: pulse
+    ports:
+      - '3000:3000'
+    depends_on:
+      authority:
+        condition: service_started
+    env_file:
+      - ../../../repos/apps/pulse/.env
+    restart: unless-stopped
+
+  shinoda:
+    build:
+      context: ../../..
+      dockerfile: repos/agents/shinoda/Dockerfile
+    container_name: shinoda
+    ports:
+      - '4111:4111'
+    depends_on:
+      backstage:
+        condition: service_started
+    env_file:
+      - ../../../repos/agents/shinoda/.env
+    restart: unless-stopped
+
+  chester:
+    build:
+      context: ../../..
+      dockerfile: repos/agents/chester/Dockerfile
+    container_name: chester
+    ports:
+      - '4110:4110'
+    depends_on:
+      nats:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/agents/chester/.env
+    restart: unless-stopped
+
+  emily:
+    build:
+      context: ../../..
+      dockerfile: repos/agents/emily/Dockerfile
+    container_name: emily
+    ports:
+      - '4112:4111'
+    depends_on:
+      nats:
+        condition: service_healthy
+    env_file:
+      - ../../../repos/agents/emily/.env
+    restart: unless-stopped
+
+volumes:
+  authority-mongo_data:
+  slim-shady-mongo_data:
+  backstage-mongo_data:
+  stereo-mongo_data:
+  petrified-redis_data:
+  fort-minor-redis_data:
+  soundgarden-minio_data:
+  petrified-minio_data:
+  fort-minor-minio_data:
+  mockingbird-minio_data:
+  hybrid-storage-minio_data:

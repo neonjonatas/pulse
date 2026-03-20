@@ -1,0 +1,66 @@
+import { atomWithImmer } from 'jotai-immer'
+
+import type { GalleryTrack } from '@domain'
+import {
+  papercutGalleryTrackMock,
+  pointsOfAuthorityGalleryTrackMock,
+  crawlingGalleryTrackMock,
+  runawayGalleryTrackMock,
+  byMyselfGalleryTrackMock,
+  inTheEndGalleryTrackMock,
+  aPlaceForMyHeadGalleryTrackMock,
+  forgottenGalleryTrackMock,
+  cureForTheItchGalleryTrackMock,
+  pushingMeAwayGalleryTrackMock,
+  forewordGalleryTrackMock,
+  dontStayGalleryTrackMock,
+  somewhereIBelongGalleryTrackMock,
+  lyingFromYouGalleryTrackMock,
+  hitTheFloorGalleryTrackMock,
+  easierToRunGalleryTrackMock,
+  faintGalleryTrackMock,
+  figure09GalleryTrackMock,
+  breakingTheHabitGalleryTrackMock,
+  fromTheInsideGalleryTrackMock,
+  nobodysListeningGalleryTrackMock,
+  sessionGalleryTrackMock,
+  numbGalleryTrackMock,
+  warGalleryTrackMock,
+  theCatalystGalleryTrackMock,
+  wretchesAndKingsGalleryTrackMock,
+  wastelandsGalleryTrackMock,
+  battleSymphonyGalleryTrackMock
+} from '@mocks'
+
+const mockGallery: GalleryTrack[] = [
+  papercutGalleryTrackMock,
+  pointsOfAuthorityGalleryTrackMock,
+  crawlingGalleryTrackMock,
+  runawayGalleryTrackMock,
+  byMyselfGalleryTrackMock,
+  inTheEndGalleryTrackMock,
+  aPlaceForMyHeadGalleryTrackMock,
+  forgottenGalleryTrackMock,
+  cureForTheItchGalleryTrackMock,
+  pushingMeAwayGalleryTrackMock,
+  forewordGalleryTrackMock,
+  dontStayGalleryTrackMock,
+  somewhereIBelongGalleryTrackMock,
+  lyingFromYouGalleryTrackMock,
+  hitTheFloorGalleryTrackMock,
+  easierToRunGalleryTrackMock,
+  faintGalleryTrackMock,
+  figure09GalleryTrackMock,
+  breakingTheHabitGalleryTrackMock,
+  fromTheInsideGalleryTrackMock,
+  nobodysListeningGalleryTrackMock,
+  sessionGalleryTrackMock,
+  numbGalleryTrackMock,
+  warGalleryTrackMock,
+  theCatalystGalleryTrackMock,
+  wretchesAndKingsGalleryTrackMock,
+  wastelandsGalleryTrackMock,
+  battleSymphonyGalleryTrackMock
+]
+
+export const galleryAtom = atomWithImmer<GalleryTrack[]>(mockGallery.reverse())

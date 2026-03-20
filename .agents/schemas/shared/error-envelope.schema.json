@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/shared/error-envelope",
+  "title": "Error Envelope",
+  "description": "Standardized error envelope for failure events and error responses across the Pulse platform. Used in event payloads when an operation fails (e.g., track.upload.failed, track.petrified.failed). See EVENT_ARCHITECTURE.md §2 payload conventions.",
+  "version": "1.0.0",
+  "owner": "platform",
+  "domain": "platform",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "errorCode": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9_]+$",
+      "description": "Machine-readable error code in UPPER_SNAKE_CASE (e.g., 'PROCESSING_FAILED', 'VALIDATION_ERROR', 'TIMEOUT')."
+    },
+    "message": {
+      "type": "string",
+      "description": "Human-readable error description."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the error occurred."
+    },
+    "service": {
+      "type": "string",
+      "description": "Name of the service that produced the error (e.g., 'soundgarden', 'petrified', 'fort-minor')."
+    },
+    "correlationId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Pipeline correlation ID for tracing this error back to the originating workflow."
+    },
+    "details": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Additional error context. Structure varies by error type."
+    }
+  },
+  "required": ["errorCode", "message", "timestamp", "service"],
+  "examples": [
+    {
+      "errorCode": "PROCESSING_FAILED",
+      "message": "Fingerprint generation timed out after 30000ms",
+      "timestamp": "2026-03-19T14:35:00.000Z",
+      "service": "petrified",
+      "correlationId": "550e8400-e29b-41d4-a716-446655440000"
+    },
+    {
+      "errorCode": "VALIDATION_ERROR",
+      "message": "File exceeds maximum allowed size of 50MB",
+      "timestamp": "2026-03-19T14:30:01.000Z",
+      "service": "soundgarden",
+      "details": {
+        "maxSizeBytes": 52428800,
+        "actualSizeBytes": 104857600
+      }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "//",
+  "linter": {
+    "rules": {
+      "correctness": {
+        "noUnusedFunctionParameters": "off"
+      }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
+}

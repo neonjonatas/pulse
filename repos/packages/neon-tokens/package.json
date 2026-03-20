@@ -1,0 +1,28 @@
+{
+  "name": "@pack/neon-tokens",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "default": "./dist/index.css",
+      "style": "./dist/index.css"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "dev": "npm run build --watch",
+    "build": "npm run build:colors && postcss src/index.css -o dist/index.css",
+    "build:colors": "postcss src/colors.css -o dist/colors.css"
+  },
+  "devDependencies": {
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1"
+  }
+}

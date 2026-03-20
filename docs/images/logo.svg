@@ -1,0 +1,26 @@
+<svg style="vertical-align: middle; margin-bottom: 5px;" width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="baseGradient" cx="30%" cy="25%" r="75%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="25%" stop-color="#f8a8ff" />
+      <stop offset="50%" stop-color="#b388ff" />
+      <stop offset="75%" stop-color="#5e7bff" />
+      <stop offset="100%" stop-color="#4fd1c5" />
+    </radialGradient>
+    <radialGradient id="warmEdge" cx="15%" cy="20%" r="80%">
+      <stop offset="0%" stop-color="#5e7bff" />
+      <stop offset="40%" stop-color="#b388ff" />
+      <stop offset="100%" stop-color="#f8a8ff" />
+    </radialGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="0.8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <circle cx="16" cy="16" r="14" fill="url(#baseGradient)" filter="url(#softGlow)" />
+	<circle cx=" 16" cy="16" r="14" fill="url(#warmEdge)" />
+  <ellipse cx="11" cy="9" rx="6" ry="4" fill="rgba(255,255,255,0.35)" />
+</svg>

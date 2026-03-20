@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": ".",
+    "declaration": true,
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node"],
+    "paths": {
+      "@adapters": ["./src/adapters/index.ts"],
+      "@errors": ["./src/event-bus.error.ts"],
+      "@middleware": ["./src/middleware/index.ts"],
+      "@nats": ["./src/nats/index.ts"],
+      "@nest": ["./src/nest/index.ts"],
+      "@ports": ["./src/ports/index.ts"],
+      "@messaging-types": ["./src/types/index.ts"],
+      "@validation": ["./src/validation/index.ts"]
+    }
+  },
+  "include": ["src"]
+}

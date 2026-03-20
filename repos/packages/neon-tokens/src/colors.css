@@ -1,0 +1,39 @@
+:root {
+/* =========================================================
+  🌌 PULSE NEON COLOR PALETTE — Warm Synth / Violet Core Edition
+  Inspired by neon dusk, vapor glow, pearlescent light
+  OKLCH for perceptual smoothness
+  ========================================================= */
+
+  --ps-neon-01: oklch(14% 0.10 270);
+  --ps-neon-02: oklch(18% 0.14 280);
+  --ps-neon-03: oklch(22% 0.18 295);
+  --ps-neon-04: oklch(26% 0.20 305);
+  --ps-neon-05: oklch(30% 0.22 310);
+  --ps-neon-06: oklch(34% 0.24 315);
+
+  --ps-neon-07: oklch(40% 0.26 320);
+  --ps-neon-08: oklch(46% 0.27 325);
+  --ps-neon-09: oklch(52% 0.28 330);
+  --ps-neon-10: oklch(58% 0.29 338);
+  --ps-neon-11: oklch(64% 0.30 345);
+  --ps-neon-12: oklch(70% 0.31 350);
+  --ps-neon-13: oklch(72% 0.30 355);
+  --ps-neon-14: oklch(74% 0.29 5);
+
+  --ps-neon-15: oklch(76% 0.28 15);
+  --ps-neon-16: oklch(78% 0.26 25);
+  --ps-neon-17: oklch(80% 0.24 35);
+  --ps-neon-18: oklch(82% 0.22 55);
+  --ps-neon-19: oklch(84% 0.20 70);
+  --ps-neon-20: oklch(86% 0.18 85);
+  --ps-neon-21: oklch(88% 0.16 95);
+
+  --ps-neon-22: oklch(90% 0.14 300);
+  --ps-neon-23: oklch(92% 0.12 280);
+  --ps-neon-24: oklch(94% 0.10 260);
+  --ps-neon-25: oklch(96% 0.08 240);
+  --ps-neon-26: oklch(72% 0.18 240);
+  --ps-neon-27: oklch(66% 0.16 230);
+  --ps-neon-28: oklch(60% 0.14 220);
+}

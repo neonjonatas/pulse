@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://pulse.internal/schemas/health/dependency-status",
+  "title": "Dependency Status",
+  "description": "Status of a single infrastructure dependency (NATS, MongoDB, MinIO, Redis). Used as a value type within the readiness check response.",
+  "version": "1.0.0",
+  "owner": "platform",
+  "domain": "platform",
+  "createdOn": "2026-03-19",
+  "updatedOn": "2026-03-19",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["connected", "disconnected", "timeout", "error"],
+      "description": "Connection status of the dependency."
+    },
+    "latencyMs": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Round-trip latency to the dependency in milliseconds. Only present when status is 'connected'."
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message when status is 'disconnected', 'timeout', or 'error'."
+    },
+    "lastCheckedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of the last health check for this dependency."
+    }
+  },
+  "required": ["status"],
+  "examples": [
+    { "status": "connected", "latencyMs": 3 },
+    { "status": "disconnected", "error": "ECONNREFUSED" },
+    { "status": "timeout", "error": "Health check timed out after 5000ms" }
+  ]
+}

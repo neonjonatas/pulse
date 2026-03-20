@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "baseUrl": "src",
+    "declaration": true,
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "target": "ES2022",
+    "strict": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@circuit-breaker": ["./circuit-breaker/index.ts"],
+      "@factory": ["./factory/unique-entity-id.ts"]
+    }
+  },
+  "include": ["src"]
+}
