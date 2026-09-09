@@ -6,6 +6,7 @@ import { useImmer } from 'use-immer'
 import { createReasoningStream } from './reasoning.connection'
 import type { PipelineEventPayload, ReasoningMessage } from './reasoning.types'
 
+const DEFAULT_IDLE_TIMEOUT_MS = 3000
 const IDLE_TIMEOUT_MS = getIdleTimeoutFromEnv()
 
 export interface UseReasoningStreamResult {
@@ -133,9 +134,7 @@ function getIdleTimeoutFromEnv(): number {
   const value = process.env.NEXT_PUBLIC_REASONING_IDLE_TIMEOUT_MS
 
   if (!value) {
-    throw new Error(
-      'Missing required env var NEXT_PUBLIC_REASONING_IDLE_TIMEOUT_MS'
-    )
+    return DEFAULT_IDLE_TIMEOUT_MS
   }
 
   const parsed = Number(value)
