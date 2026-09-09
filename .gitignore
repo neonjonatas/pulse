@@ -12,5 +12,4 @@ dist-ssr
 server/dist
 public/dist
 storybook-static/
-pnpm-lock.yaml
 .pnpm-store

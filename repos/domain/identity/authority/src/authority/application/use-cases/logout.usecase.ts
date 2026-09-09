@@ -76,7 +76,7 @@ export class LogoutUseCase extends UseCase<LogoutInput, LogoutResult> {
       )
 
       return { success: true }
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid refresh token')
     }
   }

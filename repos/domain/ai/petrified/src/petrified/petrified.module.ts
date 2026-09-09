@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 
 import { GenerateFingerprintUseCase } from 'src/petrified/application/use-cases/generate-fingerprint.use-case'
-import { PetrifiedEventBusPort } from 'src/petrified/application/ports/petrified-event-bus.port'
 import { PetrifiedGeneratorPort } from 'src/petrified/application/ports/petrified-generator.port'
 import { AudioHashPort } from 'src/petrified/application/ports/audio-hash.port'
 import { IdempotencyPort } from 'src/petrified/application/ports/idempotency.port'

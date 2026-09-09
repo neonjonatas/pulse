@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common'
 
 import { TranscribeTrackUseCase } from '@application/use-cases/transcribe-track.use-case'
-import { FortMinorEventBusPort } from '@application/ports/fort-minor-event-bus.port'
 import { TranscriberPort } from '@application/ports/transcriber.port'
 import { IdempotencyPort } from '@application/ports/idempotency.port'
 import { AiSdkTranscriberAdapter } from '@infra/adapters/ai-sdk-transcriber.adapter'
