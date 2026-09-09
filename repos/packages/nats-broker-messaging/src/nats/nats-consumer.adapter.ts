@@ -41,7 +41,7 @@ export class NatsConsumer<Events extends EventContract> {
     handler: MessageHandler<Events[EventName]>,
     options?: { expectedVersion?: number }
   ): () => void {
-    let sub
+    let sub: ReturnType<NatsConnection['subscribe']>
     try {
       sub = this.nc.subscribe(subject, { queue: this.queue })
     } catch (error) {

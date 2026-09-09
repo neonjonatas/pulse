@@ -107,7 +107,7 @@ export class RefreshTokenUseCase extends UseCase<
       )
 
       return { accessToken, refreshToken: rotatedRefreshToken }
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException()
     }
   }
