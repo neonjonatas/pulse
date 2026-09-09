@@ -1,10 +1,7 @@
 import { Module } from '@nestjs/common'
 
 import { TranscodeTrackUseCase } from '@application/use-cases'
-import {
-  StoragePort,
-  TranscoderPort
-} from '@domain/ports'
+import { StoragePort, TranscoderPort } from '@domain/ports'
 import {
   natsConnectionProvider,
   NatsLifecycleService
