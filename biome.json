@@ -24,12 +24,7 @@
       },
       "style": {
         "useImportType": "off",
-        "useConsistentTypeDefinitions": {
-          "level": "error",
-          "options": {
-            "style": "interface"
-          }
-        },
+        "useConsistentTypeDefinitions": "off",
         "useFilenamingConvention": {
           "level": "error",
           "options": {
