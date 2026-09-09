@@ -3,6 +3,7 @@ packages:
   - "repos/packages/*"
   - "repos/domain/**"
   - "repos/agents/*"
+minimumReleaseAge: 1440
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
